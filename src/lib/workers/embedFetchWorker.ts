@@ -2,7 +2,7 @@ import type { ArticleType as Article, EmbeddingsCache } from '$lib/types';
 import axios, { AxiosError, type AxiosResponse } from 'axios';
 import { HUGGINGFACE_API_URL } from '../similarityConfig';
 
-let huggingfaceApiToken: string | null = null;
+let huggingfaceApiToken: string = "";
 
 const DEFAULT_QUEUE_TIME = 10; // in seconds
 let articlesQueue: Article[] | null = [];
@@ -29,9 +29,6 @@ async function retryRequest(
     const responses: (AxiosResponse | Error)[] = [];
     for (let i = 0; i < retries; i++) {
         try {
-            if (!huggingfaceApiToken) {
-                throw new Error('API token is not set.');
-            }
             const response = await axios.post(
                 HUGGINGFACE_API_URL,
                 { inputs: articlesWithIds.map(article => `${article.title} ${article.text}`) },
